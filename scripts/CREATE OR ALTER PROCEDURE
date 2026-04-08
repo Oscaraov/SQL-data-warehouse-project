@@ -1,14 +1,16 @@
 CREATE OR ALTER PROCEDURE bronze.load_bronze AS
 
 BEGIN
+	DECLARE @start_time DATETIME, @end_time DATETIME, @batch_start_time DATETIME, @batch_end_time DATETIME
 	BEGIN TRY
-
+		SET @batch_start_time = GETDATE();
 		PRINT '----------------------------';
 		PRINT 'Loading the Bronze layer';
 		PRINT '----------------------------';
 		PRINT 'Loading CRM Tables';
 		PRINT '----------------------------';
 	
+		SET @start_time = GETDATE();
 		PRINT '>>> Truncating Table: bronze.crm_cust_info'
 		TRUNCATE TABLE bronze.crm_cust_info;
 
@@ -20,6 +22,11 @@ BEGIN
 			FIELDTERMINATOR = ',',
 			TABLOCK
 		);
+		SET @end_time = GETDATE();
+		PRINT '>> Load Duration: ' + CAST (DATEDIFF(second, @start_time, @end_time) AS NVARCHAR) + ' seconds';
+		PRINT '----------------------------';
+
+		SET @start_time = GETDATE();
 		PRINT '>>> Truncating Table: bronze.crm_sales_details'
 		TRUNCATE TABLE bronze.crm_sales_details;
 
@@ -34,10 +41,15 @@ BEGIN
 
 		PRINT '----------------------------';
 		PRINT 'CRM files Loaded';
-		PRINT '----------------------------';
+		PRINT '============================';
 		PRINT 'Loading ERP files';
 		PRINT '----------------------------';
 
+		SET @end_time = GETDATE();
+		PRINT '>> Load Duration: ' + CAST (DATEDIFF(second, @start_time, @end_time) AS NVARCHAR) + ' seconds';
+		PRINT '----------------------------';
+
+		SET @start_time = GETDATE();
 		PRINT '>>> Truncating Table: bronze.erp_cust_az12'
 		TRUNCATE TABLE bronze.erp_cust_az12;
 
@@ -49,7 +61,12 @@ BEGIN
 			FIELDTERMINATOR = ',',
 			TABLOCK
 		);
+		SET @end_time = GETDATE();
+		PRINT '>> Load Duration: ' + CAST (DATEDIFF(second, @start_time, @end_time) AS NVARCHAR) + ' seconds';
+		PRINT '----------------------------';
 
+
+		SET @start_time = GETDATE();
 		PRINT '>>> Truncating Table: bronze.erp_loc_a101'
 		TRUNCATE TABLE bronze.erp_loc_a101;
 
@@ -61,7 +78,12 @@ BEGIN
 			FIELDTERMINATOR = ',',
 			TABLOCK
 		);
+		SET @end_time = GETDATE();
+		PRINT '>> Load Duration: ' + CAST (DATEDIFF(second, @start_time, @end_time) AS NVARCHAR) + ' seconds';
+		PRINT '----------------------------';
 
+
+		SET @start_time = GETDATE();
 		PRINT '>>> Truncating Table: bronze.erp_px_cat_g1v2'
 		TRUNCATE TABLE bronze.erp_px_cat_g1v2;
 
@@ -73,11 +95,18 @@ BEGIN
 			FIELDTERMINATOR = ',',
 			TABLOCK
 		);
+		SET @end_time = GETDATE();
+		PRINT '>> Load Duration: ' + CAST (DATEDIFF(second, @start_time, @end_time) AS NVARCHAR) + ' seconds';
+		PRINT '----------------------------';
 
 		PRINT '----------------------------';
 		PRINT 'ERP files Loaded';
 		PRINT '----------------------------';
 		PRINT 'Loading Complete';
+		PRINT '----------------------------';
+
+		SET @batch_end_time = GETDATE();
+		PRINT'>> Batch Load Duration: ' + CAST (DATEDIFF(second, @batch_start_time, @batch_end_time) AS NVARCHAR) + ' seconds';
 	END TRY
 	BEGIN CATCH
 		PRINT '----------------------------';

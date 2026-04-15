@@ -108,4 +108,25 @@ FROM bronze.crm_sales_details
 
 -----------------------------------------------------------
 
--- Continue with bronze.erp_cust_az12
+INSERT INTO silver.erp_cust_az12(
+	cid,
+	bdate,
+	gen
+)
+
+SELECT
+	CASE WHEN cid LIKE 'NAS%' THEN SUBSTRING(cid, 4, LEN(cid))
+		ELSE cid
+	END AS cid, -- Ta bort NAS från äldre id
+	CASE WHEN bdate > GETDATE() OR bdate < '1900-01-01' THEN NULL
+		ELSE bdate
+	END AS bdate, -- Ta bort för gamla födelsedatum och födelsedatum i framtiden
+	CASE WHEN UPPER(TRIM(gen)) IN ('F', 'FEMALE') THEN 'Female'
+		 WHEN UPPER(TRIM(gen)) IN ('M', 'MALE') THEN 'Male'
+	ELSE 'n/a'
+	END AS gen -- Transformera felaktiga inmatningar till korrekta och ersätt NULL med n/a
+FROM bronze.erp_cust_az12
+
+--------------------------------------------------------
+
+-- Continue with bronze.erp_loc_a101

@@ -129,4 +129,21 @@ FROM bronze.erp_cust_az12
 
 --------------------------------------------------------
 
--- Continue with bronze.erp_loc_a101
+INSERT INTO silver.erp_loc_a101(
+	cid,
+	cntry
+)
+
+SELECT
+	REPLACE(cid, '-', '') cid,
+	CASE WHEN TRIM(cntry) = 'DE' THEN 'Germany'
+		WHEN TRIM(cntry) IN ('USA', 'US') THEN 'United States'
+		WHEN TRIM(cntry) = '' OR cntry IS NULL THEN 'n/a'
+		ELSE TRIM(cntry) 
+	END AS cntry
+FROM bronze.erp_loc_a101
+
+--------------------------------------------------------
+
+
+-- Continue with bronze.erp_px_cat_g1v2

@@ -30,9 +30,9 @@ create_date      DATE
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-#2. gold.dim_products
-##Purpose: Store product data.
-###Coulumns:
+# 2. gold.dim_products
+## Purpose: Store product data.
+### Coulumns:
 
 Column name      Data type      Description
 
@@ -60,9 +60,9 @@ start_date       DATE
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-#3. gold.fact_sales
-##Purpose: Store sales data.
-###Coulumns:
+# 3. gold.fact_sales
+## Purpose: Store sales data.
+### Coulumns:
 
 Column name      Data type      Description
 
